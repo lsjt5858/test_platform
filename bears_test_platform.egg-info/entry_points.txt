@@ -1,0 +1,3 @@
+[console_scripts]
+bears = cli.bears:cli
+
