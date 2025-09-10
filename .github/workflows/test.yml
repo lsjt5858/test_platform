@@ -16,6 +16,7 @@ jobs:
       - name: Setup PYTHONPATH for multi-src layout
         run: |
           echo "PYTHONPATH=$PYTHONPATH:$(pwd)/biz/src:$(pwd)/core/src:$(pwd)/app/src" >> $GITHUB_ENV
+          echo "ENTERPRISE_API_BASE_URL=${{ secrets.ENTERPRISE_API_BASE_URL }}" >> $GITHUB_ENV
       - name: Setup Node for Allure CLI
         uses: actions/setup-node@v4
         with:

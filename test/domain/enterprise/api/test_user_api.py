@@ -1,6 +1,9 @@
+import os
 import pytest
 from biz.enterprise.biz_ops.user_flow import UserFlow
 
+@pytest.mark.integration
+@pytest.mark.skipif(not os.getenv("ENTERPRISE_API_BASE_URL"), reason="ENTERPRISE_API_BASE_URL not set; skipping integration test in CI")
 @pytest.fixture
 def user_flow():
     return UserFlow(env="test")
