@@ -1,0 +1,62 @@
+services:
+  prometheus:
+    image: prom/prometheus:v2.49.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./perf/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.enable-remote-write-receiver'
+    networks:
+      - perf-network
+
+  grafana:
+    image: grafana/grafana:10.3.1
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./perf/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./perf/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - perf-network
+
+  k6:
+    image: grafana/k6:0.49.0
+    volumes:
+      - ./perf/k6/scripts:/scripts
+      - ./perf/k6/results:/results
+    command: run --out csv=/results/k6_results.csv --summary-trend-stats="avg,min,med,max,p(95),p(99),count" /scripts/smoke_test.js
+    depends_on:
+      - prometheus
+    ports:
+      - "6565:6565"
+    networks:
+      - perf-network
+
+  pushgateway:
+    image: prom/pushgateway:v1.6.2
+    ports:
+      - "9091:9091"
+    networks:
+      - perf-network
+
+  k6-bridge:
+    image: python:3.9-slim
+    volumes:
+      - ./perf/k6/results:/results
+      - ./perf/k6_pushgateway_bridge.py:/app/bridge.py
+    working_dir: /app
+    command: sh -c "pip install requests && sleep 5 && python bridge.py"
+    depends_on:
+      - pushgateway
+      - k6
+    networks:
+      - perf-network
+
+networks:
+  perf-network:
+    driver: bridge
