@@ -1,0 +1,2 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","645","验证百度搜索GET接口可用性与基础响应","test.domain.demo","Wed Sep 10 22:35:43 CST 2025","passed","Wed Sep 10 22:35:44 CST 2025","","test_baidu_api","",""

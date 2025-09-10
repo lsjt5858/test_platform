@@ -1,0 +1,152 @@
+{
+    "metrics": {
+        "checks": {
+            "passes": 290,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.95": false
+            },
+            "value": 1
+        },
+        "http_req_tls_handshaking": {
+            "med": 0,
+            "max": 77.989167,
+            "p(95)": 0,
+            "p(99)": 68.66245149,
+            "count": 290,
+            "avg": 2.1817579,
+            "min": 0
+        },
+        "http_reqs": {
+            "count": 290,
+            "rate": 9.422111509301608
+        },
+        "data_sent": {
+            "count": 206278,
+            "rate": 6701.980406605921
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 290,
+            "thresholds": {
+                "rate<0.05": false
+            },
+            "value": 0
+        },
+        "http_req_duration{expected_response:true}": {
+            "count": 290,
+            "avg": 24.78963165172412,
+            "min": 18.666417,
+            "med": 23.920187,
+            "max": 67.564916,
+            "p(95)": 33.16804825,
+            "p(99)": 42.23281849
+        },
+        "http_req_waiting": {
+            "count": 290,
+            "avg": 24.623695420689653,
+            "min": 18.546292,
+            "med": 23.7933965,
+            "max": 67.398042,
+            "p(95)": 33.00129185,
+            "p(99)": 42.047077359999996
+        },
+        "vus_max": {
+            "value": 5,
+            "min": 5,
+            "max": 5
+        },
+        "http_req_duration": {
+            "max": 67.564916,
+            "p(95)": 33.16804825,
+            "p(99)": 42.23281849,
+            "count": 290,
+            "avg": 24.78963165172412,
+            "min": 18.666417,
+            "med": 23.920187,
+            "thresholds": {
+                "p(95)<1500": false
+            }
+        },
+        "iteration_duration": {
+            "p(99)": 1204.65698844,
+            "count": 145,
+            "avg": 1057.1943702827589,
+            "min": 1041.558626,
+            "med": 1050.918042,
+            "max": 1214.608958,
+            "p(95)": 1070.4293499999999
+        },
+        "data_received": {
+            "count": 589638,
+            "rate": 19157.362021108904
+        },
+        "http_req_receiving": {
+            "p(99)": 0.40435599999999994,
+            "count": 290,
+            "avg": 0.13078390344827573,
+            "min": 0.020875,
+            "med": 0.1091255,
+            "max": 1.72225,
+            "p(95)": 0.2624685999999999
+        },
+        "http_req_sending": {
+            "count": 290,
+            "avg": 0.035152327586206886,
+            "min": 0.006666,
+            "med": 0.026104,
+            "max": 1.099084,
+            "p(95)": 0.06052689999999999,
+            "p(99)": 0.12191049999999992
+        },
+        "iterations": {
+            "count": 145,
+            "rate": 4.711055754650804
+        },
+        "vus": {
+            "value": 5,
+            "min": 5,
+            "max": 5
+        },
+        "http_req_blocked": {
+            "p(99)": 84.32108823,
+            "count": 290,
+            "avg": 2.6417792793103443,
+            "min": 0.001083,
+            "med": 0.005646,
+            "max": 90.891375,
+            "p(95)": 0.018248249999999962
+        },
+        "http_req_connecting": {
+            "min": 0,
+            "med": 0,
+            "max": 1.253666,
+            "p(95)": 0,
+            "p(99)": 1.0801423799999998,
+            "count": 290,
+            "avg": 0.029559906896551726
+        }
+    },
+    "root_group": {
+        "groups": {},
+        "checks": {
+                "status is 200": {
+                    "path": "::status is 200",
+                    "id": "6210a8cd14cd70477eba5c5e4cb3fb5f",
+                    "passes": 145,
+                    "fails": 0,
+                    "name": "status is 200"
+                },
+                "body contains 百度": {
+                    "passes": 145,
+                    "fails": 0,
+                    "name": "body contains 百度",
+                    "path": "::body contains 百度",
+                    "id": "b7c5232438467814ac4fda8d04799eac"
+                }
+            },
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+}

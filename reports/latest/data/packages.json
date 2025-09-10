@@ -1,1 +1,1 @@
-{"uid":"83edc06c07f9ae9e47eb6dd1b683e4e2","name":"packages","children":[]}
+{"uid":"83edc06c07f9ae9e47eb6dd1b683e4e2","name":"packages","children":[{"name":"test.domain.demo.test_baidu_api","children":[{"name":"验证百度搜索GET接口可用性与基础响应","uid":"9be3d5c9a967827a","parentUid":"0e5166a6953979276472c3c262ab9e03","status":"passed","time":{"start":1757514943638,"stop":1757514944283,"duration":645},"flaky":false,"newFailed":false,"newPassed":false,"newBroken":false,"retriesCount":0,"retriesStatusChange":false,"parameters":[],"tags":[]}],"uid":"test.domain.demo.test_baidu_api"}]}

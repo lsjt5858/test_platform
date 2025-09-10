@@ -29,7 +29,7 @@ services:
     volumes:
       - ./perf/k6/scripts:/scripts
       - ./perf/k6/results:/results
-    command: run --out csv=/results/k6_results.csv --summary-trend-stats="avg,min,med,max,p(95),p(99),count" /scripts/smoke_test.js
+    command: run --out csv=/results/k6_results.csv --summary-export /results/summary.json --summary-trend-stats="avg,min,med,max,p(95),p(99),count" /scripts/baidu_get.js
     depends_on:
       - prometheus
     ports:
