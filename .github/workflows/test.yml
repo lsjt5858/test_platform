@@ -4,9 +4,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
       - name: Install dependencies
@@ -14,7 +14,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Setup Node for Allure CLI
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
       - name: Install Allure Commandline
@@ -27,13 +27,13 @@ jobs:
         run: allure generate reports/.allure_results_tmp -o reports/latest --clean
       - name: Upload Allure report artifact
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: reports/latest
       - name: Upload Allure results artifact
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: reports/.allure_results_tmp
