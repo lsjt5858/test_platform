@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!--STATUS OK-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+    
+
+
+    
+    
+        
+
+
+
+
+
+<html class="">
+	<head>
+		
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="content-type" content="text/html;charset=utf-8">
+		<meta content="origin-when-cross-origin" name="referrer">
+        <meta name="theme-color" content="#ffffff">
+        <link rel="shortcut icon" href="https://www.baidu.com/favicon.ico" type="image/x-icon" />
+        <link rel="icon" sizes="any" mask href="https://www.baidu.com/favicon.ico">
+        <link rel="search" type="application/opensearchdescription+xml" href="/content-search.xml" title="百度搜索" />
+	  	<link rel="stylesheet" data-for="result" href="https://pss.bdstatic.com/r/www/static/font/cosmic/pc/cos-icon_acd3da0.css"/>
+		<link rel="apple-touch-icon-precomposed" href="https://psstatic.cdn.bcebos.com/video/wiseindex/

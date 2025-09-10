@@ -1,4 +1,4 @@
-#!/Users/Apple/PycharmProjects/test_platform/nut_venv/bin/python3
+#!/Users/Apple/PycharmProjects/test_platform/nut_venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

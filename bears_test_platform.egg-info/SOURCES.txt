@@ -1,0 +1,8 @@
+README.md
+setup.py
+bears_test_platform.egg-info/PKG-INFO
+bears_test_platform.egg-info/SOURCES.txt
+bears_test_platform.egg-info/dependency_links.txt
+bears_test_platform.egg-info/entry_points.txt
+bears_test_platform.egg-info/requires.txt
+bears_test_platform.egg-info/top_level.txt
