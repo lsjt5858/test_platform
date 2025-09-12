@@ -1,0 +1,119 @@
+# 测试平台全局配置文件
+# 支持多环境配置，通过 TEST_ENV 环境变量切换
+
+# 默认配置
+api:
+  base_url: "http://localhost:8000"
+  timeout: 30
+  retries: 3
+
+database:
+  mysql:
+    host: "localhost"
+    port: 3306
+    user: "test_user"
+    password: "test_password"
+    database: "test_db"
+    max_connections: 5
+    charset: "utf8mb4"
+  
+  redis:
+    host: "localhost"  
+    port: 6379
+    db: 0
+    password: null
+    max_connections: 10
+  
+  elasticsearch:
+    hosts: ["localhost:9200"]
+    username: null
+    password: null
+    timeout: 30
+    use_ssl: false
+
+message_queue:
+  kafka:
+    bootstrap_servers: ["localhost:9092"]
+    group_id: "test-platform-consumer"
+    auto_offset_reset: "latest"
+    security_protocol: "PLAINTEXT"
+  
+  rabbitmq:
+    host: "localhost"
+    port: 5672
+    virtual_host: "/"
+    username: "guest"
+    password: "guest"
+    ssl_enabled: false
+
+logging:
+  level: "INFO"
+  log_dir: "logs"
+  log_file: "test_platform.log"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+performance:
+  k6:
+    binary_path: "k6"
+    output_dir: "performance_results"
+  
+  prometheus:
+    url: "http://localhost:9090"
+    pushgateway_url: "http://localhost:9091"
+  
+  grafana:
+    url: "http://localhost:3000"
+    username: "admin"
+    password: "admin"
+    api_key: null
+
+ui_automation:
+  browser:
+    default: "chrome"
+    headless: false
+    window_size: [1920, 1080]
+    implicit_wait: 10
+    page_load_timeout: 30
+    download_dir: "downloads"
+  
+  selenium:
+    hub_url: null
+    grid_enabled: false
+
+upload:
+  enabled: false
+  type: "s3"
+  s3:
+    bucket: "test-platform-reports"
+    region: "us-east-1"
+    access_key_id: null
+    secret_access_key: null
+    prefix: "test-reports"
+
+# 环境特定配置（可以通过环境变量覆盖）
+environments:
+  development:
+    api:
+      base_url: "http://localhost:8000"
+    logging:
+      level: "DEBUG"
+  
+  testing:
+    api:
+      base_url: "http://test-api.example.com"
+    logging:
+      level: "INFO"
+  
+  staging:  
+    api:
+      base_url: "http://staging-api.example.com"
+    upload:
+      enabled: true
+  
+  production:
+    api:
+      base_url: "http://api.example.com"
+    logging:
+      level: "WARNING"
+    upload:
+      enabled: true
