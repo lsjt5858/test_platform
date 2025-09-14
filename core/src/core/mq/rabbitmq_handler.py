@@ -13,6 +13,11 @@ try:
     RABBITMQ_AVAILABLE = True
 except ImportError:
     RABBITMQ_AVAILABLE = False
+    # 定义占位符异常类，当 RabbitMQ 不可用时使用
+    class AMQPConnectionError(Exception):
+        pass
+    class AMQPChannelError(Exception):
+        pass
 
 from .base_mq_handler import BaseMQHandler, Message, MessageQueueError
 from ..base_util.logger import get_logger
