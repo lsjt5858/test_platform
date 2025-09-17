@@ -1,0 +1,18 @@
+# Test cache
+.pytest_cache/
+
+# Build metadata
+bears_test_platform.egg-info/
+
+# Reports
+reports/
+
+# Local virtual environment
+nut_venv/
+
+# Python bytecode and cache
+__pycache__/
+*.pyc
+
+# IDE settings
+.idea/

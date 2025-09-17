@@ -1,4 +1,4 @@
-from app.enterprise.caller.enterprise_client import EnterpriseClient
+from app.enterprise.user.caller.enterprise_client import EnterpriseClient
 from core.pytest_util.assertions import CustomAssertions
 
 class UserFlow:

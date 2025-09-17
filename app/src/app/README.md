@@ -18,7 +18,7 @@ App Layer 是测试平台的 API 封装层，专门负责对各类外部 API 进
 企业级内部 API 封装，主要用于内部系统间的数据交互。
 
 ```python
-from app.enterprise.caller.enterprise_client import EnterpriseClient
+from app.enterprise.user.caller.enterprise_client import EnterpriseClient
 
 # 初始化客户端
 client = EnterpriseClient(env="test")
@@ -142,7 +142,7 @@ class EnterpriseClient:
 ### 基本用法
 
 ```python
-from app.enterprise.caller.enterprise_client import EnterpriseClient
+from app.enterprise.user.caller.enterprise_client import EnterpriseClient
 
 # 1. 初始化客户端
 client = EnterpriseClient(env="test")
@@ -153,7 +153,7 @@ try:
     user_response = client.get_user_info("user123")
     print(f"Status: {user_response.status_code}")
     print(f"Data: {user_response.json()}")
-    
+
     # 创建订单
     order_data = {
         "user_id": "user123",
@@ -162,11 +162,11 @@ try:
     }
     order_response = client.create_order(order_data)
     order_id = order_response.json()["order_id"]
-    
+
     # 查询订单
     order_info = client.get_order_info(order_id)
     print(f"Order info: {order_info.json()}")
-    
+
 except Exception as e:
     print(f"API call failed: {e}")
 ```
