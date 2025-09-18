@@ -4,7 +4,7 @@ Kafka message queue handler for test data streaming and validation.
 
 import json
 import time
-from typing import Any, Dict, List, Optional, Callable
+from typing import Any, Dict, List, Optional, Callable, TYPE_CHECKING
 from dataclasses import dataclass, field
 
 try:
@@ -14,6 +14,14 @@ try:
     KAFKA_AVAILABLE = True
 except ImportError:
     KAFKA_AVAILABLE = False
+    # 定义占位符异常类，当 Kafka 不可用时使用
+    class KafkaError(Exception):
+        pass
+    class KafkaTimeoutError(Exception):
+        pass
+
+if TYPE_CHECKING:
+    from kafka import KafkaConsumer
 
 from .base_mq_handler import BaseMQHandler, Message, MessageQueueError
 from ..base_util.logger import get_logger
@@ -148,7 +156,7 @@ class KafkaHandler(BaseMQHandler):
         
         self.producer = KafkaProducer(**producer_kwargs)
     
-    def _create_consumer(self, topics: List[str]) -> KafkaConsumer:
+    def _create_consumer(self, topics: List[str]) -> 'KafkaConsumer':
         """Create Kafka consumer for specific topics."""
         consumer_kwargs = {
             'bootstrap_servers': self.consumer_config.bootstrap_servers,

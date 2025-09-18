@@ -286,24 +286,25 @@ class UserFlow:
 
 ```python
 # biz/enterprise/biz_ops/payment_flow.py
-from app.enterprise.caller.enterprise_client import EnterpriseClient
+from app.enterprise.user.caller.enterprise_client import EnterpriseClient
 from core.pytest_util.assertions import CustomAssertions
+
 
 class PaymentFlow:
     def __init__(self, env="default"):
         self.client = EnterpriseClient(env)
         self.assertions = CustomAssertions()
-    
+
     def process_payment(self, order_id, payment_data):
         """处理支付流程"""
         # 1. 验证订单状态
         order_resp = self.client.get_order_info(order_id)
         self.assertions.assert_json_value(order_resp, "status", "pending")
-        
+
         # 2. 创建支付
         payment_resp = self.client.create_payment(payment_data)
         self.assertions.assert_status_code(payment_resp, 201)
-        
+
         return payment_resp.json()["payment_id"]
 ```
 

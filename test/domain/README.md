@@ -46,25 +46,26 @@ class TestConfigLoader:
 ```python
 # test/domain/integration/test_api_integration.py
 import pytest
-from app.enterprise.caller.enterprise_client import EnterpriseClient
+from app.enterprise.user.caller.enterprise_client import EnterpriseClient
 from core.pytest_util.assertions import CustomAssertions
+
 
 class TestEnterpriseAPIIntegration:
     def setup_method(self):
         """测试设置"""
         self.client = EnterpriseClient(env="test")
         self.assertions = CustomAssertions()
-    
+
     def test_get_user_info_integration(self):
         """测试获取用户信息的集成"""
         # 假设测试环境有预设用户
         user_id = "test_user_001"
         response = self.client.get_user_info(user_id)
-        
+
         self.assertions.assert_status_code(response, 200)
         self.assertions.assert_json_key(response, "user_id")
         self.assertions.assert_json_value(response, "user_id", user_id)
-    
+
     def test_create_order_integration(self):
         """测试创建订单的集成"""
         order_data = {
@@ -72,12 +73,12 @@ class TestEnterpriseAPIIntegration:
             "product_id": "P001",
             "quantity": 1
         }
-        
+
         response = self.client.create_order(order_data)
-        
+
         self.assertions.assert_status_code(response, 201)
         self.assertions.assert_json_key(response, "order_id")
-        
+
         # 验证订单详情
         order_id = response.json()["order_id"]
         detail_response = self.client.get_order_info(order_id)
@@ -154,13 +155,14 @@ class TestUserJourney:
 # test/domain/contract/test_api_contract.py
 import pytest
 import jsonschema
-from app.enterprise.caller.enterprise_client import EnterpriseClient
+from app.enterprise.user.caller.enterprise_client import EnterpriseClient
+
 
 class TestAPIContract:
     def setup_method(self):
         """测试设置"""
         self.client = EnterpriseClient(env="test")
-        
+
         # 定义 API 响应的 JSON Schema
         self.user_schema = {
             "type": "object",
@@ -172,7 +174,7 @@ class TestAPIContract:
             },
             "required": ["user_id", "username", "email"]
         }
-        
+
         self.order_schema = {
             "type": "object",
             "properties": {
@@ -185,18 +187,18 @@ class TestAPIContract:
             },
             "required": ["order_id", "user_id", "product_id", "quantity", "status"]
         }
-    
+
     def test_user_info_api_contract(self):
         """测试用户信息 API 契约"""
         user_id = "contract_test_user"
         response = self.client.get_user_info(user_id)
-        
+
         assert response.status_code == 200
-        
+
         # 验证响应结构符合契约
         response_data = response.json()
         jsonschema.validate(response_data, self.user_schema)
-    
+
     def test_order_creation_api_contract(self):
         """测试订单创建 API 契约"""
         order_data = {
@@ -204,11 +206,11 @@ class TestAPIContract:
             "product_id": "P001",
             "quantity": 2
         }
-        
+
         response = self.client.create_order(order_data)
-        
+
         assert response.status_code == 201
-        
+
         # 验证响应结构符合契约
         response_data = response.json()
         jsonschema.validate(response_data, self.order_schema)
@@ -262,10 +264,12 @@ import pytest
 from utils.data_generator import DataGenerator
 from core.config.config_loader import ConfigLoader
 
+
 @pytest.fixture
 def test_config():
     """测试配置夹具"""
     return ConfigLoader(env="test")
+
 
 @pytest.fixture
 def test_user_data():
@@ -273,23 +277,27 @@ def test_user_data():
     generator = DataGenerator()
     return generator.generate_user_data()
 
+
 @pytest.fixture
 def test_order_data():
     """测试订单数据夹具"""
     generator = DataGenerator()
     return generator.generate_order_data()
 
+
 @pytest.fixture
 def enterprise_client():
     """企业客户端夹具"""
-    from app.enterprise.caller.enterprise_client import EnterpriseClient
+    from app.enterprise.user.caller.enterprise_client import EnterpriseClient
     return EnterpriseClient(env="test")
+
 
 @pytest.fixture
 def user_flow():
     """用户流程夹具"""
     from biz.enterprise.biz_ops.user_flow import UserFlow
     return UserFlow(env="test")
+
 
 @pytest.fixture(scope="session")
 def test_database():

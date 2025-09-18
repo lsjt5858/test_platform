@@ -43,14 +43,14 @@ source nut_venv/bin/activate
 from core.config.config_loader import ConfigLoader
 → from nut_core.base_util.config_handler import ConfigHandler
 
-from core.protocol.http_client import HttpClient  
+from core.protocol.http_client import HttpClient
 → from nut_core.protocol.http_handler import HttpHandler
 
 from core.pytest_util.assertions import CustomAssertions
 → from nut_core.pytest_util.assertions import CustomAssertions
 
 # App层
-from app.enterprise.caller.enterprise_client import EnterpriseClient
+from app.enterprise.user.caller.enterprise_client import EnterpriseClient
 → from nut_app.enterprise.caller.user_caller import UserCaller
 → from nut_app.enterprise.caller.order_caller import OrderCaller
 

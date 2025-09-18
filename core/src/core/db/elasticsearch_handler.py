@@ -6,7 +6,7 @@ import json
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Union
 from elasticsearch import Elasticsearch
-from elasticsearch.exceptions import ElasticsearchException
+from elasticsearch.exceptions import ApiError, TransportError, ConnectionError
 
 from .base_db_handler import BaseDBHandler, DatabaseError
 from ..base_util.logger import get_logger
@@ -85,7 +85,7 @@ class ElasticsearchHandler(BaseDBHandler):
             self._connected = False
             return False
     
-    @retry(RetryConfig(max_attempts=3, exceptions=(ElasticsearchException,)))
+    @retry(RetryConfig(max_attempts=3, exceptions=(ApiError, TransportError, ConnectionError)))
     def execute_query(self, query: str, params: Optional[Dict[str, Any]] = None) -> Any:
         """Execute Elasticsearch query (JSON string or dict)."""
         if not self.is_connected():
