@@ -13,33 +13,36 @@ import jwt
 import requests
 import datetime
 import time
-
-
 from core.base_util.log_util import LogUtil
 from core.base_util.config_util import ConfigUtil
 from core.base_util.singleton import SingletonMeta
 from core.base_util.datetime_util import DatetimeUtil
 
-
+ConfigUtil.reload()
 class LoginHandler(metaclass=SingletonMeta):
     """Singleton class of login handler.
-    登录处理器的单例类。"""
+    全局单例，统一管理登录、刷新、缓存与多种登录通道的令牌获取与
+  续期，避免重复登录与多处散落的鉴权逻辑（nut_core/src/nut_core/protocol/login_handler.py:19）。
+      - 多通道支持：同时支持通用登录/刷新、Volcano（需要 CSRF/cookie）和“本地签发 ByteHouse JWT”三条
+  路径。"""
 
+    # 从配置读取 host、登录/刷新 URL、用户和可选的账号   31-44
     login_host = ConfigUtil.get_value('host')
     login_url = ConfigUtil.get_value('login_url')
     refresh_login_url = ConfigUtil.get_value('refresh_login_url')
     refresh_time = ConfigUtil.get_value('refresh_time')
     if not refresh_time:
+        # 刷新阈值默认 900 秒，可通过配置覆盖
         refresh_time = 900
     else:
         refresh_time = int(refresh_time)
     user_info = {
-        "number":ConfigUtil.get_value('number'),
+        "number": (ConfigUtil.get_value('number') or '').strip('"\''),
         'user': ConfigUtil.get_value('user'),
         'password': ConfigUtil.get_value('password')
     }
-    # account_name = ConfigUtil.get_value('accountname')
-    zone = ConfigUtil.get_value('zone')
+    # 'zone' is stored under [base], not 'default'
+    zone = ConfigUtil.get_zone()
     # 缓存访问令牌、刷新令牌和时间戳
     login_cache = {
         'create_time': None,
@@ -51,8 +54,8 @@ class LoginHandler(metaclass=SingletonMeta):
     @classmethod
     def update_by_dict(cls, update_info):
         """Updates current user info
-        更新当前用户信息
-
+        支持动态更新用户信息（nut_core/src/nut_core/protocol/login_handler.py:45, 56）。
+  - 通用登录与刷新
         Args:
             update_info:  target user info, {'user': xxx, 'password': xxx}
                          目标用户信息，格式为 {'user': xxx, 'password': xxx}
@@ -98,17 +101,27 @@ class LoginHandler(metaclass=SingletonMeta):
                 访问令牌
         """
         token_create_time = cls.login_cache.get('create_time')
-        if token_create_time is None:
-            access_token = cls.get_login_token(login_type='login')
-        elif DatetimeUtil.get_time_delta(token_create_time, datetime.datetime.now()) > cls.refresh_time:
-            # refresh access_token when 15min expiration.
-            LogUtil.info(f"The auth token is longer than {cls.refresh_time} sec, will be refresh")
-            access_token = cls.get_login_token(login_type='refresh')
+        # For onprem zone, use ERP login/refresh flow (JWT access/refresh endpoints)
+        if cls.zone and cls.zone.lower() == 'onprem':
+            if token_create_time is None:
+                access_token = cls.get_erp_login_token(login_type='login')
+            elif DatetimeUtil.get_time_delta(token_create_time, datetime.datetime.now()) > cls.refresh_time:
+                LogUtil.info(f"The auth token is older than {cls.refresh_time} sec, refreshing via ERP API")
+                access_token = cls.get_erp_login_token(login_type='refresh') or cls.get_erp_login_token('login')
+            else:
+                access_token = cls.login_cache.get('access_token')
         else:
-            access_token = cls.login_cache.get('access_token')
+            if token_create_time is None:
+                access_token = cls.get_login_token(login_type='login')
+            elif DatetimeUtil.get_time_delta(token_create_time, datetime.datetime.now()) > cls.refresh_time:
+                LogUtil.info(f"The auth token is older than {cls.refresh_time} sec, refreshing")
+                access_token = cls.get_login_token(login_type='refresh')
+            else:
+                access_token = cls.login_cache.get('access_token')
 
         return access_token
 
+    @classmethod
     def get_erp_login_token(cls, login_type='login'):
         """Gets the login token. Call different API of login or refresh based on login_type.
         获取登录令牌。根据login_type调用不同的登录或刷新API。
@@ -124,18 +137,23 @@ class LoginHandler(metaclass=SingletonMeta):
                               用户的刷新令牌，用于在访问令牌过期时刷新
 
         """
-        user_password = cls.user_info['user'] + ':' + cls.user_info['password']
-        encode_user_info = str(base64.b64encode(user_password.encode('utf-8')), 'utf-8')
-        login_auth = f"Basic {encode_user_info}"
-        refresh_auth = f"Bearer {cls.login_cache.get('refresh_token')}"
         call_url = cls.refresh_login_url if login_type == 'refresh' else cls.login_url
-        auth = refresh_auth if login_type == 'refresh' else login_auth
+        url = cls.login_host + call_url
+        headers = {'Content-Type': 'application/json'}
 
-        headers = {'Authorization': auth, 'X-Account-Name': cls.account_name} if cls.account_name else {
-            'Authorization': auth}
-        login_url = cls.login_host + call_url
+        if login_type == 'refresh':
+            payload = {'refresh': cls.login_cache.get('refresh_token')}
+        else:
+            payload = {
+                'username': cls.user_info.get('user'),
+                'password': cls.user_info.get('password'),
+            }
+            number = cls.user_info.get('number')
+            if number:
+                payload['number'] = number
+
         try:
-            res = requests.post(login_url, headers=headers)
+            res = requests.post(url, headers=headers, json=payload)
         except Exception as e:
             LogUtil.exception(f"Call {login_type} API by user {cls.user_info} exception: {e}.")
             return None
@@ -144,13 +162,17 @@ class LoginHandler(metaclass=SingletonMeta):
                 LogUtil.warn(f"Call {login_type} API by user {cls.user_info} failed, code: {res.status_code}.")
                 return None
 
-        res_data = json.loads(res.text)
-        access_token = res_data.get('data').get('signedToken') if cls.account_name else res_data.get('data').get(
-            'token').get('access_token')
-        refresh_token = res_data.get('data').get('refreshToken') if cls.account_name else res_data.get('data').get(
-            'token').get('refresh_token')
+        # Expected ERP response format:
+        # - login: {"access": "...", "refresh": "..."}
+        # - refresh: {"access": "..."} (some backends may also return refresh)
+        try:
+            res_data = res.json()
+        except ValueError:
+            LogUtil.warn(f"{login_type} response is not JSON: {res.text[:200]}")
+            return None
+        access_token = res_data.get('access')
+        refresh_token = res_data.get('refresh') or cls.login_cache.get('refresh_token')
 
-        # Todo(wangzifeng): store access_token and refresh_token to redis for 15min expiration.
         cls.login_cache['access_token'] = access_token
         cls.login_cache['refresh_token'] = refresh_token
         cls.login_cache['create_time'] = datetime.datetime.now()
@@ -331,12 +353,5 @@ class LoginHandler(metaclass=SingletonMeta):
 if __name__ == '__main__':
     login_handler = LoginHandler()
     login_handler.get_access_token()
-    time.sleep(60)
-    print('zifengw debug: already sleep 60')
-    login_handler.get_access_token()
-    time.sleep(300)
-    print('zifengw debug: already sleep 300')
-    login_handler.get_access_token()
-    time.sleep(1000)
-    print('zifengw debug: already sleep 1000')
-    login_handler.get_access_token()
+    time.sleep(5)
+    print(login_handler.get_access_token())

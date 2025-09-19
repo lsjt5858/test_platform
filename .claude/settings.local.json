@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/Users/Apple/PycharmProjects/test_platform/nut_venv/bin/python /Users/Apple/PycharmProjects/test_platform/app/src/app/enterprise/user/caller/user_http_caller.py)",
+      "Bash(PYTHONPATH=/Users/Apple/PycharmProjects/test_platform/app/src:/Users/Apple/PycharmProjects/test_platform/core/src /Users/Apple/PycharmProjects/test_platform/nut_venv/bin/python /Users/Apple/PycharmProjects/test_platform/app/src/app/enterprise/user/caller/user_http_caller.py)",
+      "Bash(PYTHONPATH=/Users/Apple/PycharmProjects/test_platform/app/src:/Users/Apple/PycharmProjects/test_platform/core/src /Users/Apple/PycharmProjects/test_platform/nut_venv/bin/python -c \"\nfrom core.base_util.config_util import ConfigUtil\nConfigUtil.reload()\nprint(''Zone:'', ConfigUtil.get_zone())\nprint(''Product:'', ConfigUtil.get_product()) \nprint(''Env:'', ConfigUtil.get_env())\nprint(''Zone env:'', ConfigUtil.get_zone_env())\nprint(''Has accountname:'', ConfigUtil.has_value(''accountname''))\nprint(''Config sections:'', ConfigUtil.config.sections())\nif ConfigUtil.config.has_section(''onprem_800''):\n    print(''onprem_800 options:'', list(ConfigUtil.config.options(''onprem_800'')))\n\")",
+      "Bash(PYTHONPATH=/Users/Apple/PycharmProjects/test_platform/app/src:/Users/Apple/PycharmProjects/test_platform/core/src /Users/Apple/PycharmProjects/test_platform/nut_venv/bin/python -c \"\nfrom core.base_util.config_util import ConfigUtil\nConfigUtil.reload()\nprint(''Has accountname:'', ConfigUtil.has_value(''accountname''))\nif ConfigUtil.has_value(''accountname''):\n    print(''accountname value:'', ConfigUtil.get_value(''accountname''))\n\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
