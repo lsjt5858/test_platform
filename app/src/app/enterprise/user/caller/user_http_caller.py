@@ -6,4 +6,33 @@
 
 from app.enterprise.user.constants.user_http_api_urls import UserHttpApiUrls
 from core.base_util.config_util import ConfigUtil
+ConfigUtil.reload()
 from core.protocol.app_enum import psm
+from core.protocol.http_handler import ERPHttpHandler,HttpHandler
+from core.base_util.log_util import LogUtil
+
+@psm('p,s,m')
+class UserHttpCaller:
+    """HTTP Caller class for User API"""
+    def __init__(self,hostname=None):
+        if hostname is None:
+            hostname = ConfigUtil.get_value('host')
+        if ConfigUtil.get_zone() == "onprem":
+            self.http_client = ERPHttpHandler(hostname)
+        else:
+            self.http_client = ERPHttpHandler(hostname)
+        self.origin_http_client = HttpHandler(hostname)
+
+    def list_users(self,headers=None):
+        """list users API Caller"""
+        LogUtil.info("call list users api...")
+        code,res_data = self.http_client.get(
+            UserHttpApiUrls.USER_LIST_URL,
+            headers=headers
+        )
+
+        return code,res_data if code==200 and  res_data else None
+
+
+if __name__ == '__main__':
+    code, resp = UserHttpCaller().list_users()

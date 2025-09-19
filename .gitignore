@@ -1,5 +1,34 @@
-# Test cache
+# Virtual environments
+nut_venv/
+venv/
+.venv/
+env/
+ENV/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+
+# Test / coverage / cache
 .pytest_cache/
+.mypy_cache/
+.coverage*
+htmlcov/
+.cache/
+
+# IDE / editor
+.idea/
+.vscode/
+
+# OS
+.DS_Store
 
 # Build metadata
 bears_test_platform.egg-info/
