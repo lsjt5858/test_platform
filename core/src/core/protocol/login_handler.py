@@ -14,7 +14,7 @@ import requests
 import datetime
 import time
 
-import nut_core
+
 from core.base_util.log_util import LogUtil
 from core.base_util.config_util import ConfigUtil
 from core.base_util.singleton import SingletonMeta
@@ -34,10 +34,11 @@ class LoginHandler(metaclass=SingletonMeta):
     else:
         refresh_time = int(refresh_time)
     user_info = {
+        "number":ConfigUtil.get_value('number'),
         'user': ConfigUtil.get_value('user'),
         'password': ConfigUtil.get_value('password')
     }
-    account_name = ConfigUtil.get_value('accountname')
+    # account_name = ConfigUtil.get_value('accountname')
     zone = ConfigUtil.get_value('zone')
     # 缓存访问令牌、刷新令牌和时间戳
     login_cache = {
@@ -107,6 +108,55 @@ class LoginHandler(metaclass=SingletonMeta):
             access_token = cls.login_cache.get('access_token')
 
         return access_token
+
+    def get_erp_login_token(cls, login_type='login'):
+        """Gets the login token. Call different API of login or refresh based on login_type.
+        获取登录令牌。根据login_type调用不同的登录或刷新API。
+
+        Args:
+            login_type(str): login or refresh
+                           登录类型：登录或刷新
+
+        Returns:
+            access_token(str): user's login access token
+                             用户的登录访问令牌
+            refresh_token(str): user's refresh token to fresh access token when expired.
+                              用户的刷新令牌，用于在访问令牌过期时刷新
+
+        """
+        user_password = cls.user_info['user'] + ':' + cls.user_info['password']
+        encode_user_info = str(base64.b64encode(user_password.encode('utf-8')), 'utf-8')
+        login_auth = f"Basic {encode_user_info}"
+        refresh_auth = f"Bearer {cls.login_cache.get('refresh_token')}"
+        call_url = cls.refresh_login_url if login_type == 'refresh' else cls.login_url
+        auth = refresh_auth if login_type == 'refresh' else login_auth
+
+        headers = {'Authorization': auth, 'X-Account-Name': cls.account_name} if cls.account_name else {
+            'Authorization': auth}
+        login_url = cls.login_host + call_url
+        try:
+            res = requests.post(login_url, headers=headers)
+        except Exception as e:
+            LogUtil.exception(f"Call {login_type} API by user {cls.user_info} exception: {e}.")
+            return None
+        else:
+            if res.status_code != 200:
+                LogUtil.warn(f"Call {login_type} API by user {cls.user_info} failed, code: {res.status_code}.")
+                return None
+
+        res_data = json.loads(res.text)
+        access_token = res_data.get('data').get('signedToken') if cls.account_name else res_data.get('data').get(
+            'token').get('access_token')
+        refresh_token = res_data.get('data').get('refreshToken') if cls.account_name else res_data.get('data').get(
+            'token').get('refresh_token')
+
+        # Todo(wangzifeng): store access_token and refresh_token to redis for 15min expiration.
+        cls.login_cache['access_token'] = access_token
+        cls.login_cache['refresh_token'] = refresh_token
+        cls.login_cache['create_time'] = datetime.datetime.now()
+
+        return access_token
+
 
     @classmethod
     def get_login_token(cls, login_type='login'):
