@@ -222,7 +222,7 @@ class LoginHandler(metaclass=SingletonMeta):
         refresh_token = res_data.get('data').get('refreshToken') if cls.account_name else res_data.get('data').get(
             'token').get('refresh_token')
 
-        # Todo(wangzifeng): store access_token and refresh_token to redis for 15min expiration.
+        # Todo: store access_token and refresh_token to redis for 15min expiration.
         cls.login_cache['access_token'] = access_token
         cls.login_cache['refresh_token'] = refresh_token
         cls.login_cache['create_time'] = datetime.datetime.now()

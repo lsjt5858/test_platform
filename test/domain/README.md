@@ -93,42 +93,43 @@ class TestEnterpriseAPIIntegration:
 ```python
 # test/domain/business/test_user_journey.py
 import pytest
-from biz.enterprise.biz_ops.user_flow import UserFlow
+from biz.enterprise.user.biz_ops import UserFlow
 from utils.data_generator import DataGenerator
+
 
 class TestUserJourney:
     def setup_method(self):
         """测试设置"""
         self.flow = UserFlow(env="test")
         self.data_generator = DataGenerator()
-    
+
     @pytest.mark.integration
     def test_complete_user_shopping_flow(self):
         """测试完整的用户购物流程"""
         # 生成测试用户数据
         user_data = self.data_generator.generate_user_data()
-        
+
         # 1. 用户注册（假设有注册功能）
         user_id = self.flow.register_user(user_data)
         assert user_id is not None
-        
+
         # 2. 用户登录并创建订单
         order_data = self.data_generator.generate_order_data()
         order_id = self.flow.login_and_create_order(user_id, order_data)
         assert order_id is not None
-        
+
         # 3. 验证订单状态
         order_info = self.flow.get_order_details(order_id)
         assert order_info["status"] == "created"
         assert order_info["user_id"] == user_id
-        
+
         # 4. 更新订单状态
         self.flow.update_order_status(order_id, "confirmed")
-        
+
         # 5. 验证最终状态
         final_order_info = self.flow.get_order_details(order_id)
         assert final_order_info["status"] == "confirmed"
-    
+
     @pytest.mark.smoke
     def test_user_login_and_order_creation(self):
         """冒烟测试：用户登录并创建订单"""
@@ -137,10 +138,10 @@ class TestUserJourney:
             "product_id": "P001",
             "quantity": 1
         }
-        
+
         order_id = self.flow.login_and_create_order(user_id, order_data)
         assert order_id is not None
-        
+
         # 验证订单基本信息
         order_info = self.flow.get_order_details(order_id)
         assert order_info["user_id"] == user_id
@@ -295,7 +296,7 @@ def enterprise_client():
 @pytest.fixture
 def user_flow():
     """用户流程夹具"""
-    from biz.enterprise.biz_ops.user_flow import UserFlow
+    from biz.enterprise.user.biz_ops import UserFlow
     return UserFlow(env="test")
 
 

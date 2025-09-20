@@ -45,6 +45,6 @@ class UserHttpCaller:
 
 if __name__ == '__main__':
     user_call = UserHttpCaller()
-    # code,res_data = user_call.list_users()
-    code,res_data = user_call.create_user()
+    code,res_data = user_call.list_users()
+    # code,res_data = user_call.create_user()
     print(code,res_data)

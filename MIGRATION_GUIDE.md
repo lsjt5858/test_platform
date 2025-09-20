@@ -55,7 +55,7 @@ from app.enterprise.user.caller.enterprise_client import EnterpriseClient
 → from nut_app.enterprise.caller.order_caller import OrderCaller
 
 # Biz层
-from biz.enterprise.biz_ops.user_flow import UserFlow
+from biz.enterprise.user.biz_ops import UserFlow
 → from nut_biz.enterprise.biz_ops.user_flow import UserFlow
 
 # Test层

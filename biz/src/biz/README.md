@@ -19,7 +19,7 @@ Biz Layer 是测试平台的业务编排层，也称为"胶水层"。它的核�
 企业级业务流程编排，处理内部系统的复杂业务场景。
 
 ```python
-from biz.enterprise.biz_ops.user_flow import UserFlow
+from biz.enterprise.user.biz_ops import UserFlow
 
 # 初始化业务流程
 flow = UserFlow(env="test")
@@ -221,14 +221,15 @@ class CommonFlow:
 ### 复杂业务流程
 
 ```python
-from biz.enterprise.biz_ops.user_flow import UserFlow
+from biz.enterprise.user.biz_ops import UserFlow
+
 
 def test_complete_shopping_flow():
     """测试完整的购物流程"""
-    
+
     # 初始化业务流程
     flow = UserFlow(env="test")
-    
+
     # 执行完整的购物业务流程
     try:
         # 1. 用户注册
@@ -236,24 +237,24 @@ def test_complete_shopping_flow():
             "username": "testuser",
             "email": "test@example.com"
         })
-        
+
         # 2. 用户登录并创建订单
         order_id = flow.login_and_create_order(
             user_id=user_id,
             order_data={"product_id": "P001", "quantity": 2}
         )
-        
+
         # 3. 订单支付
         payment_id = flow.pay_for_order(order_id, {
             "payment_method": "credit_card",
             "amount": 199.99
         })
-        
+
         # 4. 验证整个流程
         flow.verify_order_completion(order_id, payment_id)
-        
+
         print(f"购物流程测试完成: 订单 {order_id}, 支付 {payment_id}")
-        
+
     except Exception as e:
         print(f"业务流程失败: {e}")
         raise
