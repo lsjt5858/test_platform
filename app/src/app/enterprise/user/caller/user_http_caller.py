@@ -33,6 +33,17 @@ class UserHttpCaller:
 
         return code,res_data if code==200 and  res_data else None
 
+    def create_user(self,data=None,headers=None):
+        """create user API Caller"""
+        LogUtil.info("call create user api...")
+        code,res_data = self.http_client.post(
+            UserHttpApiUrls.CREATE_USER_URL,
+            data=data,
+            headers=headers
+        )
+        return code,res_data if code==200 and res_data else None
 
 if __name__ == '__main__':
-    code, resp = UserHttpCaller().list_users()
+    user_call = UserHttpCaller()
+    code,res_data = user_call.create_user()
+    print(res_data)
