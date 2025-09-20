@@ -33,7 +33,7 @@ def version():
 @click.option('--domain', required=True, help='Test domain to run (e.g., enterprise)')
 @click.option('--k', 'kexpr', default=None, help='pytest -k expression to filter tests')
 @click.option('-v', '--verbose', is_flag=True, help='Verbose pytest output')
-@click.option('--report-dir', default='reports/latest', show_default=True, help='Final Allure report output directory (will be overwritten each run)')
+@click.option('--report-dir', default='test/reports/latest', show_default=True, help='Final Allure report output directory (will be overwritten each run)')
 def run(test_type, domain, kexpr, verbose, report_dir):
     """🏃 Run tests and generate Allure report, e.g. 'bears run api --domain=enterprise'"""
     base_dir = os.path.join('test', 'domain', domain)
@@ -50,8 +50,8 @@ def run(test_type, domain, kexpr, verbose, report_dir):
         click.echo(f"❌ Failed to prepare report directory '{report_dir}': {e}")
         sys.exit(1)
 
-    # 临时 Allure 结果目录（放在最终目录之外，避免 --clean 清理冲突）
-    results_dir = os.path.join('reports', '.allure_results_tmp')
+    # 临时 Allure 结果目录（与最终目录同级，避免 --clean 清理冲突）
+    results_dir = os.path.join(os.path.dirname(report_dir), '.allure_results_tmp')
     try:
         if os.path.exists(results_dir):
             shutil.rmtree(results_dir)

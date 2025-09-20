@@ -246,11 +246,11 @@ def run(ctx, module, env, tags, parallel, report, output):
     
     if report:
         if report == 'html':
-            cmd.extend(['--html=reports/report.html', '--self-contained-html'])
+            cmd.extend(['--html=test/reports/report.html', '--self-contained-html'])
         elif report == 'json':
-            cmd.extend(['--json-report', '--json-report-file=reports/report.json'])
+            cmd.extend(['--json-report', '--json-report-file=test/reports/report.json'])
         elif report == 'junit':
-            cmd.extend(['--junit-xml=reports/report.xml'])
+            cmd.extend(['--junit-xml=test/reports/report.xml'])
     
     if verbose:
         cmd.append('-v')
@@ -499,7 +499,7 @@ default_settings:
   verbose: false
   parallel_jobs: 4
   report_format: html
-  output_dir: reports
+  output_dir: test/reports
 
 environments:
   default: config_default.ini

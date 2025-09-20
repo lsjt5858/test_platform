@@ -163,7 +163,9 @@ init_directories() {
     print_info "初始化目录结构..."
     
     # 创建必要的目录
-    mkdir -p {logs,reports,test_data}
+    # Initialize common directories
+    mkdir -p {logs,test_data}
+    mkdir -p test/reports
     mkdir -p perf/k6/{scripts,results}
     mkdir -p nut_test/domain/{enterprise,enterprise_ui,open_api}
     

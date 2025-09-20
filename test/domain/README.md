@@ -465,7 +465,7 @@ pytest --dist worksteal
 
 ```bash
 # 生成 HTML 报告
-pytest --html=reports/report.html --self-contained-html
+pytest --html=test/reports/report.html --self-contained-html
 ```
 
 ### 2. 覆盖率报告
@@ -479,7 +479,7 @@ pytest --cov=core --cov=app --cov=biz --cov-report=html
 
 ```bash
 # 生成 JUnit XML 报告（CI/CD 集成）
-pytest --junit-xml=reports/junit.xml
+pytest --junit-xml=test/reports/junit.xml
 ```
 
 ## 目录结构

@@ -35,6 +35,7 @@ bears_test_platform.egg-info/
 
 # Reports
 reports/
+test/reports/
 
 # Local virtual environment
 nut_venv/
