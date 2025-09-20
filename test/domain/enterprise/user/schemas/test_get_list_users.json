@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "test_get_list_users",
+  "title": "User List Response",
+  "description": "Response schema for paginated user list API",
+  "type": "object",
+  "properties": {
+    "count": {
+      "type": "integer",
+      "description": "Total number of users matching the query",
+      "minimum": 0
+    },
+    "next": {
+      "type": ["string", "null"],
+      "description": "URL to the next page of results, or null if no next page",
+      "format": "uri"
+    },
+    "previous": {
+      "type": ["string", "null"],
+      "description": "URL to the previous page of results, or null if no previous page",
+      "format": "uri"
+    },
+    "results": {
+      "type": "array",
+      "description": "Array of user objects",
+      "items": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Unique username of the user",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the user",
+            "minLength": 1
+          },
+          "phone": {
+            "type": ["string", "null"],
+            "description": "User's phone number (optional)",
+            "pattern": "^\\+?[0-9\\-\\s\\(\\)]{7,}$"
+          },
+          "email": {
+            "type": ["string", "null"],
+            "description": "User's email address (optional)",
+            "format": "email"
+          },
+          "sex": {
+            "type": "string",
+            "description": "Gender code: 'man' or 'woman'",
+            "enum": ["man", "woman"]
+          },
+          "roles": {
+            "type": "array",
+            "description": "List of role identifiers (empty array means no roles)",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Whether the user account is active"
+          },
+          "id": {
+            "type": "integer",
+            "description": "Unique internal ID of the user",
+            "minimum": 1
+          },
+          "sex_display": {
+            "type": "string",
+            "description": "Human-readable gender display: '男' or '女'",
+            "enum": ["男", "女"]
+          },
+          "is_manager": {
+            "type": "boolean",
+            "description": "Whether the user has manager privileges"
+          },
+          "role_items": {
+            "type": "array",
+            "description": "Detailed role information (if any), typically empty",
+            "items": {
+              "type": "object"
+            },
+            "additionalProperties": false
+          },
+          "permissions": {
+            "type": "array",
+            "description": "List of permission codes assigned to the user",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "create_time": {
+            "type": "string",
+            "description": "Creation timestamp in format 'YYYY-MM-DD HH:MM:SS'",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+          }
+        },
+        "required": [
+          "username", "name", "id", "is_active", "sex", "sex_display", "create_time"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["count", "results"],
+  "additionalProperties": false
+}

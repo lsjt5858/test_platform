@@ -13,3 +13,11 @@ SRC_PATHS = [
 for p in SRC_PATHS:
     if p.exists():
         sys.path.insert(0, str(p))
+
+# Ensure configuration is loaded before tests import modules that depend on ConfigUtil
+try:
+    from core.base_util.config_util import ConfigUtil
+    ConfigUtil.reload()
+except Exception:
+    # Keep tests importable even if reload fails in certain IDE contexts
+    pass

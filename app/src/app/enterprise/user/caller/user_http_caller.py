@@ -41,9 +41,10 @@ class UserHttpCaller:
             data=data,
             headers=headers
         )
-        return code,res_data if code==200 and res_data else None
+        return code,res_data if code==201 and res_data else None
 
 if __name__ == '__main__':
     user_call = UserHttpCaller()
+    # code,res_data = user_call.list_users()
     code,res_data = user_call.create_user()
-    print(res_data)
+    print(code,res_data)
